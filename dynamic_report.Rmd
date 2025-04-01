@@ -1,0 +1,60 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{css}
+
+body {
+color:#1b1a25; background-color:#d1d6ff; padding:10px; 
+}
+h1 {
+font-weight: bold
+}
+
+```
+
+## Gym Session Data
+
+This data is based on observational data of what the respondent observes when entering the gym.
+
+```{r fig.width = 8}
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQMif4_c282bMRGQT_H-gZmutTvSHCCsCnUD1ROK-ZKj7GrphCChWEueq4YrPq3NkCrttuB5-BvCZBc/pub?output=csv")
+# reading in the data
+latest_data <- logged_data %>%
+  rename(
+    noise_level = 2,
+    cardio_people = 3,
+    weather = 4,
+    talk = 5
+  )
+
+paste0("The maximum amount of people recorded on cardio machines in this survey is ", max(latest_data$cardio_people), " people.")
+paste0("The average amount of people recorded on cardio machines in this survey is ", mean(latest_data$cardio_people) %>% round(1), " people.")
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = noise_level,
+               fill = talk)) +
+  labs(title = "Noise Level compared to If Anyone Spoke To The Respondent",
+       x = "Noise Level",
+       y = "Number of Responses",
+       caption = "Source: My Gym Sessions survey")
+# Noise Level coloured by If Anyone Spoke To The Respondent
+
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = noise_level,
+               fill = weather)) +
+  labs(title = "Noise level compared to Weather",
+       x = "Noise level",
+       y = "Number of Responses",
+       caption = "Source: My Gym Sessions survey")
+# Noise level coloured by Weather
+
+```
